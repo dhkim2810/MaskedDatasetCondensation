@@ -25,7 +25,7 @@ python main.py  --dataset CIFAR10  --model AlexCifarNet  --ipc 10 --method DSA  
 
 ### Performance
 |  | [DD](https://arxiv.org/abs/1811.10959) | [DC](https://openreview.net/pdf?id=mSAKhLYLSsl) | Ours |
- :-: | :-: | :-: | :-: | :-: | :-:
+ :-: | :-: | :-: | :-:
 | 1 img/cls  | - | 24.2 | 24.5 |
 | 10 img/cls | 36.8 | 39.1 | 40.1 |
 
