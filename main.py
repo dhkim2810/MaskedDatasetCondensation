@@ -9,16 +9,17 @@ import os
 import sys
 import time
 import copy
-import random
-import argparse
+from attr import define
 import numpy as np
 from tqdm import tqdm
+import logging
+
 import torch
 import torch.nn as nn
 from torchvision.utils import save_image, make_grid
 from torchvision.models import resnet18
 
-from utils import get_arguments, get_network, match_loss, at_loss, get_time
+from utils import get_arguments, get_network, get_path, match_loss, at_loss, get_time
 from config import get_loops, get_eval_pool
 from data import get_dataset, get_daparam, TensorDataset
 from diffaugment import DiffAugment, ParamDiffAug
@@ -29,28 +30,29 @@ def main(args):
     
     #### Training Configuration ####
     ## Directory Init ##
-    experiment_name = f'{args.method}_{args.dataset}_{args.model}_{args.ipc}ipc_mask'
-
-    trial = 1
-    for path in os.listdir(args.save_path):
-        if experiment_name in path:
-            trial += 1
-    experiment_name += f"_{trial}"
-    args.save_path = os.path.join(args.save_path, experiment_name)
+    args.save_path = get_path(args)
     
-    if not os.path.exists(args.data_path):
-        os.mkdir(args.data_path)
-
-    if not os.path.exists(args.save_path):
-        os.mkdir(args.save_path)
+    ## Logging Init ##
+    logging.basicConfig(filename=os.path.join(args.save_path, 'logging.log'),
+                        filemode='a',
+                        format='[%(asctime)s] %(levelname)s:%(message)s',
+                        datefmt='%m/%d %H:%M:%S',
+                        level=logging.INFO)
     
     ## CUDA Init ##
     args.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    logging.info(f'Using {args.device}...')
     
     ## DataLoader Config ##
     args.dsa_param = ParamDiffAug()
     args.dsa = True if args.method == 'DSA' else False
     channel, im_size, num_classes, class_names, mean, std, dst_train, dst_test, testloader = get_dataset(args.dataset, args.data_path)
+    
+    if args.dsa:
+        logging.info('Augmentation : True')
+        logging.info('Augmentation Method : DSA')
+        logging.info('DSA Param : \n'+args.dsa_param.print_param())
+    
 
     ## Training Config ##
     args.outer_loop, args.inner_loop = get_loops(args.ipc)

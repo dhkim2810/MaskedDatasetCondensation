@@ -14,7 +14,20 @@ class ParamDiffAug():
         self.brightness = 1.0
         self.saturation = 2.0
         self.contrast = 0.5
-
+    
+    def print_param(self):
+        param = ''
+        param += f'aug_mode : {self.aug_mode}\n'
+        param += f'prob_flip : {self.prob_flip}\n'
+        param += f'ratio_scale : {self.ratio_scale}\n'
+        param += f'ratio_rotate : {self.ratio_rotate}\n'
+        param += f'ratio_crop_pad : {self.ratio_crop_pad}\n'
+        param += f'ratio_cutout : {self.ratio_cutout}\n'
+        param += f'ratio_noise : {self.ratio_noise}\n'
+        param += f'brightness : {self.brightness}\n'
+        param += f'saturation : {self.saturation}\n'
+        param += f'contrast : {self.contrast}\n'
+        return param
 
 def set_seed_DiffAug(param):
     if param.latestseed == -1:

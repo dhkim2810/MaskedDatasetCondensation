@@ -5,6 +5,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 import argparse
+import logging
 from config import get_default_convnet_setting
 from networks import MLP, ConvNet, LeNet, AlexNet, AlexCifarNet, VGG11BN, VGG11, ResNet18, ResNet18BN, ResNet18BN_AP
 
@@ -37,7 +38,31 @@ def get_arguments():
     parser.add_argument('--mask_prob', type=float, default=0.7, help='Probability of using Attention Mask')
 
     return parser
+
+def get_path(args):
+    # experiment name
+    experiment_name = f'{args.method}_{args.dataset}_{args.model}_{args.ipc}ipc'
+    if args.mask:
+        experiment_name += '_mask'
     
+    # trial numbering
+    trial = 1
+    for path in os.listdir(args.save_path):
+        if experiment_name in path:
+            trial += 1
+    experiment_name += f"_{trial}"
+    
+    save_path = os.path.join(args.save_path, experiment_name)
+    
+    # generate folder
+    if not os.path.exists(args.data_path):
+        os.mkdir(args.data_path)
+
+    if not os.path.exists(save_path):
+        os.mkdir(save_path)
+    
+    return save_path
+
 
 def get_network(args, model, channel, num_classes, im_size=(32, 32), pretrained=False):
     torch.random.manual_seed(int(time.time() * 1000) % 100000)
