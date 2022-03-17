@@ -1,4 +1,5 @@
 import time
+import logging
 import numpy as np
 import torch
 import torch.nn as nn
@@ -68,6 +69,6 @@ def evaluate_synset(it_eval, net, images_train, labels_train, testloader, args):
 
     time_train = time.time() - start
     loss_test, acc_test = epoch('test', testloader, net, optimizer, criterion, args, aug = False)
-    print('%s Evaluate_%02d: epoch = %04d train time = %d s train loss = %.6f train acc = %.4f, test acc = %.4f' % (get_time(), it_eval, Epoch, int(time_train), loss_train, acc_train, acc_test))
-
+    logging.info('%s Evaluate_%02d: epoch = %04d train time = %d s train loss = %.6f train acc = %.4f, test acc = %.4f' % (get_time(), it_eval, Epoch, int(time_train), loss_train, acc_train, acc_test))
+    
     return net, acc_train, acc_test

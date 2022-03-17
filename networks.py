@@ -147,12 +147,10 @@ class AlexNet(nn.Module):
         return x
 
 class AlexCifarNet(nn.Module):
-    supported_dims = {32}
-
-    def __init__(self, in_channel, num_classes):
+    def __init__(self, channel, num_classes):
         super(AlexCifarNet, self).__init__()
         self.features = nn.Sequential(
-            nn.Conv2d(in_channel, 64, kernel_size=5, stride=1, padding=2),
+            nn.Conv2d(channel, 64, kernel_size=5, stride=1, padding=2),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
             nn.LocalResponseNorm(4, alpha=0.001 / 9.0, beta=0.75, k=1),
